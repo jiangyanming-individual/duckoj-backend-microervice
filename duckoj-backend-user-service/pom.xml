@@ -22,6 +22,23 @@
     </properties>
     <dependencies>
         <dependency>
+            <groupId>com.jiang</groupId>
+            <artifactId>duckoj-backend-common</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.jiang</groupId>
+            <artifactId>duckoj-backend-model</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.jiang</groupId>
+            <artifactId>duckoj-backend-service-client</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
