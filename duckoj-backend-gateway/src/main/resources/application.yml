@@ -2,57 +2,38 @@
 spring:
   application:
     name: duckoj-backend-gateway
-  # 默认 dev 环境
-  profiles:
-    active: dev
-  # 支持 swagger3
-  mvc:
-    pathmatch:
-      matching-strategy: ant_path_matcher
-  # session 配置
-  session:
-    store-type: redis
-    # 30 天过期
-    timeout: 2592000
-  # 数据库配置
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/duck_oj
-    username: root
-    password: root
-  # Redis 配置
-  redis:
-    database: 1
-    host: localhost
-    port: 6379
-    timeout: 5000
-  # password: 123456
-  servlet:
-    multipart:
-      # 大小限制
-      max-file-size: 10MB
-  # 注册到 nacos 服务
   cloud:
     nacos:
-      server-addr: 127.0.0.1::8848
-server:
-  address: 0.0.0.0
-  port: 8103
-  servlet:
-    context-path: /api
-    # cookie 30 天过期
-    session:
-      cookie:
-        max-age: 2592000
-mybatis-plus:
-  configuration:
-    map-underscore-to-camel-case: false
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-  global-config:
-    db-config:
-      logic-delete-field: isDelete # 全局逻辑删除的实体字段名
-      logic-delete-value: 1 # 逻辑已删除值（默认为 1）
-      logic-not-delete-value: 0 # 逻辑未删除值（默认为 0）
+      server-addr: 127.0.0.1::8848  # 注册到 nacos 服务
+    gateway:
+      routes:
+        - id: duckoj-backend-user-service
+          uri: lb://duckoj-backend-user-service
+          predicates:
+            - Path=/api/user/**
+        - id: duckoj-backend-question-service
+          uri: lb://duckoj-backend-question-service
+          predicates:
+            - Path=/api/question/**
+        - id: duckoj-backend-judge-question-service
+          uri: lb://duckoj-backend-judge-question-service
+          predicates:
+            - Path=/api/judge/**
+  main:
+    web-application-type: reactive
 
-codesandbox:
-  type: remote
+server:
+  port: 8104
+
+knife4j:
+  gateway:
+    # ① 第一个配置，开启gateway聚合组件
+    enabled: true
+    # ② 第二行配置，设置聚合模式采用discover服务发现的模式
+    strategy: discover
+    discover:
+      # ③ 第三行配置，开启discover模式
+      enabled: true
+      # ④ 第四行配置，聚合子服务全部为Swagger2规范的文档
+      version: swagger2
+

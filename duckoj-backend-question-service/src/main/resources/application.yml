@@ -3,8 +3,8 @@ spring:
   application:
     name: duckoj-backend-question-service
   # 默认 dev 环境
-  profiles:
-    active: dev
+    profiles:
+      active: dev
   # 支持 swagger3
   mvc:
     pathmatch:
@@ -42,6 +42,7 @@ server:
     session:
       cookie:
         max-age: 2592000
+        path: /api
 mybatis-plus:
   configuration:
     map-underscore-to-camel-case: false
@@ -54,3 +55,7 @@ mybatis-plus:
 
 codesandbox:
   type: remote
+
+# 开启knife4j接口文档
+knife4j:
+  enable: true
