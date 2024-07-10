@@ -101,11 +101,12 @@ public class JudgeServiceImpl implements JudgeService {
         judgeContext.setJudgeInfo(executeCodeResponse.getJudgeInfo());
         judgeContext.setQuestionSubmit(questionSubmit);
         judgeContext.setQuestion(question);
-        //使用策略管理，进行判题操作：
+        //使用策略管理，进行判题操作：选择不同的判题策略
         JudgeInfo judgeInfo = judgeManager.doJudge(judgeContext);
         //(6) 更新提交题目状态以及判题的状态
         questionSubmitUpdate = new QuestionSubmit();
         questionSubmitUpdate.setId(questionSubmitId);
+        //判题机的状态：
         questionSubmitUpdate.setSubmitState(QuestionSubmitStatusEnum.SUCCEED.getValue());
         questionSubmitUpdate.setJudgeInfo(JSONUtil.toJsonStr(judgeInfo));
         //更新题目提交的状态:

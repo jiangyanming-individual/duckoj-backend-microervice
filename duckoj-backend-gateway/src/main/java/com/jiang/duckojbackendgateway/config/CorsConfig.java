@@ -9,6 +9,9 @@ import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
 
+/**
+ * spring Cloud 跨域配置
+ */
 @Configuration
 public class CorsConfig {
 

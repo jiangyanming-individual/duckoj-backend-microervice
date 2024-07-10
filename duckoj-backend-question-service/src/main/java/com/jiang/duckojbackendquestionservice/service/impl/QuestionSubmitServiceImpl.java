@@ -17,6 +17,7 @@ import com.jiang.duckojbackendmodel.model.enums.QuestionSubmitLanguageEnum;
 import com.jiang.duckojbackendmodel.model.enums.QuestionSubmitStatusEnum;
 import com.jiang.duckojbackendmodel.model.vo.QuestionSubmitVO;
 import com.jiang.duckojbackendquestionservice.mapper.QuestionSubmitMapper;
+import com.jiang.duckojbackendquestionservice.mq.MyProducer;
 import com.jiang.duckojbackendquestionservice.service.QuestionService;
 import com.jiang.duckojbackendquestionservice.service.QuestionSubmitService;
 import com.jiang.duckojbackendserviceclient.service.JudgeOpenFeignClient;
@@ -28,8 +29,10 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
+
+import static com.jiang.duckojbackendcommon.constant.RabbitMQConstant.DIRECT_EXCHANGE;
+import static com.jiang.duckojbackendcommon.constant.RabbitMQConstant.ROUTING_KEY;
 
 /**
  * @author jiangyanming
@@ -48,6 +51,9 @@ public class QuestionSubmitServiceImpl extends ServiceImpl<QuestionSubmitMapper,
     @Resource
     @Lazy
     private JudgeOpenFeignClient judgeOpenFeignClient;
+
+    @Resource
+    private MyProducer myProducer;
 
     /***
      * 提交题目
@@ -92,10 +98,13 @@ public class QuestionSubmitServiceImpl extends ServiceImpl<QuestionSubmitMapper,
         //返回提交题目后的id：
         //进行判题操作
         Long questionSubmitId = questionSubmit.getId();
+
+        //改用消息队列,发送消息
+        myProducer.sendMessage(DIRECT_EXCHANGE,ROUTING_KEY,String.valueOf(questionSubmitId));
         //异步操作，不用管返回值的事：
-        CompletableFuture.runAsync(()->{
-            judgeOpenFeignClient.doJudge(questionSubmitId);
-        });
+//        CompletableFuture.runAsync(()->{
+//            judgeOpenFeignClient.doJudge(questionSubmitId);
+//        });
         return questionSubmitId;
     }
 

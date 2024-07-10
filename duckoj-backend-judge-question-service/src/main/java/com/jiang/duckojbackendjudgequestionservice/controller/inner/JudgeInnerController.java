@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 
+/**
+ * 使用rabbitmq 替换这一步：
+ */
 @RestController
 @RequestMapping("/inner")
 @Slf4j

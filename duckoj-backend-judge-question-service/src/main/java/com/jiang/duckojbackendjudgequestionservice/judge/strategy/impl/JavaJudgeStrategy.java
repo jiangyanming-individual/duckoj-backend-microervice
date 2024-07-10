@@ -37,7 +37,6 @@ public class JavaJudgeStrategy implements JudgeStrategy {
         Long runTime = Optional.ofNullable(judgeInfo.getTime()).orElse(0L);
         //运行内存
         Long runMemory = Optional.ofNullable(judgeInfo.getMemory()).orElse(0L);
-
         QuestionSubmit questionSubmit = judgeContext.getQuestionSubmit();
         Question question = judgeContext.getQuestion();
         //设置返回对象：
