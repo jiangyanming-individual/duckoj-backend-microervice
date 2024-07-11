@@ -1,10 +1,13 @@
 package com.jiang.duckojbackendjudgequestionservice.mq;
 
 
+import cn.hutool.json.JSONUtil;
 import com.jiang.duckojbackendcommon.common.ErrorCode;
 import com.jiang.duckojbackendcommon.exception.BusinessException;
 import com.jiang.duckojbackendmodel.model.entity.QuestionSubmit;
+import com.jiang.duckojbackendmodel.model.enums.JudgeInfoMessageEnum;
 import com.jiang.duckojbackendmodel.model.enums.QuestionSubmitStatusEnum;
+import com.jiang.duckojbackendmodel.model.judge.JudgeInfo;
 import com.jiang.duckojbackendserviceclient.service.QuestionOpenFeignClient;
 import com.rabbitmq.client.Channel;
 import lombok.extern.slf4j.Slf4j;
@@ -43,7 +46,11 @@ public class MyDlxConsumer {
             channel.basicNack(deliveryTag, false, false);
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "提交题目不存在");
         }
-        //将判题机状态设置为失败：
+        //将判题机状态设置为失败以及题目提交信息为运行错误
+        String judgeInfo = questionSubmit.getJudgeInfo();
+        JudgeInfo judgeInfoBean = JSONUtil.toBean(judgeInfo, JudgeInfo.class);
+        judgeInfoBean.setMessage(JudgeInfoMessageEnum.RUNTIME_ERROR.getValue());
+        questionSubmit.setJudgeInfo(JSONUtil.toJsonStr(judgeInfoBean));
         questionSubmit.setSubmitState(QuestionSubmitStatusEnum.FAILED.getValue());
         boolean b = questionOpenFeignClient.updateQuestionSubmitById(questionSubmit);
         if (!b) {

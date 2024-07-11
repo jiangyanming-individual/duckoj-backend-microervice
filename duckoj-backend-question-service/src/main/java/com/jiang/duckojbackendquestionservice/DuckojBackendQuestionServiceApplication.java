@@ -25,7 +25,6 @@ public class DuckojBackendQuestionServiceApplication {
         SpringApplication.run(DuckojBackendQuestionServiceApplication.class, args);
     }
 
-
     /**
      * rabbitmq序列化
      * @return

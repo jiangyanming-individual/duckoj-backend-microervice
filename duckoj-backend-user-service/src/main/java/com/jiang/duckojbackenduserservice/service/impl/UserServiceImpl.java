@@ -7,6 +7,7 @@ import com.jiang.duckojbackendcommon.common.ErrorCode;
 import com.jiang.duckojbackendcommon.constant.CommonConstant;
 import com.jiang.duckojbackendcommon.constant.UserConstant;
 import com.jiang.duckojbackendcommon.exception.BusinessException;
+import com.jiang.duckojbackendcommon.utils.JwtUtils;
 import com.jiang.duckojbackendcommon.utils.SqlUtils;
 import com.jiang.duckojbackendmodel.model.dto.user.UserQueryRequest;
 import com.jiang.duckojbackendmodel.model.entity.User;
@@ -16,7 +17,6 @@ import com.jiang.duckojbackendmodel.model.vo.UserVO;
 import com.jiang.duckojbackenduserservice.mapper.UserMapper;
 import com.jiang.duckojbackenduserservice.service.UserService;
 import lombok.extern.slf4j.Slf4j;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -24,7 +24,10 @@ import org.springframework.util.DigestUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static com.jiang.duckojbackendcommon.constant.SALTConstant.SALT;
@@ -54,6 +57,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         if (!userPassword.equals(checkPassword)) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "两次输入的密码不一致");
         }
+        // 账户不包含特殊字符
+        String validPattern = "[`~!@#$%^&*()+=|{}':;',\\\\[\\\\].<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]";
+        Matcher matcher = Pattern.compile(validPattern).matcher(userAccount);
+        if (matcher.find()) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "账户不能含有特殊的字符");
+        }
         synchronized (userAccount.intern()) {
             // 账户不能重复
             QueryWrapper<User> queryWrapper = new QueryWrapper<>();
@@ -70,7 +79,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             user.setUserPassword(encryptPassword);
             boolean saveResult = this.save(user);
             if (!saveResult) {
-                throw new BusinessException(ErrorCode.SYSTEM_ERROR, "注册失败，数据库错误");
+                throw new BusinessException(ErrorCode.SYSTEM_ERROR, "注册失败，插入数据库错误");
             }
             return user.getId();
         }
@@ -102,7 +111,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
         // 3. 记录用户的登录态
         request.getSession().setAttribute(UserConstant.USER_LOGIN_STATE, user);
-        return this.getLoginUserVO(user);
+        //todo 模拟jwt,生成token
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("userAccount", userAccount);
+        String token = JwtUtils.getToken(map);
+        LoginUserVO loginUserVO = this.getLoginUserVO(user);
+        loginUserVO.setToken(token);
+
+        return loginUserVO;
     }
     
     /**

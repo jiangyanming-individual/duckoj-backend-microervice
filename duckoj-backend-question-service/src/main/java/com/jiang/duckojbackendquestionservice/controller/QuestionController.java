@@ -19,6 +19,7 @@ import com.jiang.duckojbackendmodel.model.entity.QuestionSubmit;
 import com.jiang.duckojbackendmodel.model.entity.User;
 import com.jiang.duckojbackendmodel.model.vo.QuestionSubmitVO;
 import com.jiang.duckojbackendmodel.model.vo.QuestionVO;
+import com.jiang.duckojbackendquestionservice.Manager.RedissonRateLimiterManager;
 import com.jiang.duckojbackendquestionservice.service.QuestionService;
 import com.jiang.duckojbackendquestionservice.service.QuestionSubmitService;
 import com.jiang.duckojbackendserviceclient.service.UserOpenFeignClient;
@@ -39,7 +40,7 @@ import java.util.List;
 @RestController
 @Slf4j
 public class QuestionController {
-    
+
     @Resource
     private QuestionService questionService;
 
@@ -48,6 +49,9 @@ public class QuestionController {
 
     @Resource
     private UserOpenFeignClient userOpenFeignClient;
+
+    @Resource
+    private RedissonRateLimiterManager redissonRateLimiterManager;
 
     /**
      * 创建
@@ -297,7 +301,6 @@ public class QuestionController {
         return ResultUtils.success(result);
     }
 
-
     /**
      * 提交题目
      *
@@ -315,6 +318,8 @@ public class QuestionController {
         if (loginUser.getId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户id不合法");
         }
+        //执行限流操作
+        redissonRateLimiterManager.doLimitRate("questionSubmit_" + loginUser.getId());
         //返回提交题目后插入数据中的id
         long result = questionSubmitService.doQuestionSubmit(questionSubmitAddRequest, loginUser);
         return ResultUtils.success(result);

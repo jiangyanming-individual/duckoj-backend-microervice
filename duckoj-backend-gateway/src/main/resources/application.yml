@@ -19,6 +19,10 @@ spring:
           uri: lb://duckoj-backend-judge-question-service
           predicates:
             - Path=/api/judge/**
+        - id: duckoj-backend-file-service
+          uri: lb://duckoj-backend-file-service
+          predicates:
+            - Path=/api/file/**
   main:
     web-application-type: reactive
 

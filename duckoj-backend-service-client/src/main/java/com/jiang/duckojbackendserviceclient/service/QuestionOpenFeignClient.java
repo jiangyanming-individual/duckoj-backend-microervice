@@ -12,13 +12,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 
 /**
-* @author jiangyanming
-* @description 针对表【question(题目)】的数据库操作Service
-* @createDate 2024-06-21 17:43:56
-*/
+ * @author jiangyanming
+ * @description 针对表【question(题目)】的数据库操作Service
+ * @createDate 2024-06-21 17:43:56
+ */
 
 @FeignClient(name = "duckoj-backend-question-service", path = "/api/question/inner")
-public interface QuestionOpenFeignClient{
+public interface QuestionOpenFeignClient {
 
 //    Question question = questionService.getById(questionId);
 //    boolean b = questionService.updateById(question);
@@ -34,13 +34,15 @@ public interface QuestionOpenFeignClient{
     boolean updateQuestionById(@RequestBody Question question);
 
 
+    //todo 请求参数
     @GetMapping("/question_submit/getById")
-    QuestionSubmit getQuestionSubmitById(Long questionSubmitId);
+    QuestionSubmit getQuestionSubmitById(@RequestParam("questionSubmitId") long questionSubmitId);
 
 
     @PostMapping("/question_submit/update")
     boolean updateQuestionSubmitById(@RequestBody QuestionSubmit questionSubmitUpdate);
 
+    //todo
     @GetMapping("/question_submit/list")
-    List<QuestionSubmit> getQuestionSubmitList(QueryWrapper queryWrapper);
+    List<QuestionSubmit> getQuestionSubmitList(@RequestParam("queryWrapper") QueryWrapper queryWrapper);
 }

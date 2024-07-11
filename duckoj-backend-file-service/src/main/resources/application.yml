@@ -1,10 +1,10 @@
-# 公共配置文件
+# 公共配置文件,文件服务
 spring:
   application:
-    name: duckoj-backend-question-service
+    name: duckoj-backend-file-service
   # 默认 dev 环境
-    profiles:
-      active: dev
+  profiles:
+    active: dev
   # 支持 swagger3
   mvc:
     pathmatch:
@@ -31,28 +31,17 @@ spring:
     multipart:
       # 大小限制
       max-file-size: 10MB
+  # 注册到 nacos 服务
   cloud:
     nacos:
       server-addr: 127.0.0.1::8848
-  spring:
-    rabbitmq:
-      host: localhost #本机的虚拟ip
-      port: 5672 #端口号
-      username: guest
-      password: guest
-      connection-timeout: 5s #设置连接超时时间
-      template:
-        retry:
-          enabled: true
-          initial-interval: 1000ms #失败后等待时间
-          multiplier: 1 # 失败后下次等待的时长的倍数
-          max-attempts: 3 # 最多尝试的次数
 
 server:
   address: 0.0.0.0
-  port: 8106
+  port: 8108
   servlet:
-    context-path: /api/question
+    context-path: /api/file
+    # cookie 30 天过期
     session:
       cookie:
         max-age: 2592000
@@ -67,8 +56,13 @@ mybatis-plus:
       logic-delete-value: 1 # 逻辑已删除值（默认为 1）
       logic-not-delete-value: 0 # 逻辑未删除值（默认为 0）
 
-codesandbox:
-  type: remote
+aliyun:
+  oss:
+    file:
+      endpoint: xxx
+      keyid: xxxx
+      keysecret: xxxx
+      bucketname: xxx
 
 # 开启knife4j接口文档
 knife4j:

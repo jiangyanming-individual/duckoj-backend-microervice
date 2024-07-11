@@ -5,7 +5,7 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**
- * 用户更新请求
+ * 用户更新请求，管理员
  *
  */
 @Data
@@ -29,6 +29,26 @@ public class UserUpdateRequest implements Serializable {
      * 简介
      */
     private String userProfile;
+
+
+    /**
+     * 性别
+     */
+    private String gender;
+
+    /**
+     * 邮箱
+     */
+    private String email;
+    /**
+     * 手机号
+     */
+    private String phone;
+
+    /**
+     * 状态：
+     */
+    private String userState;
 
     /**
      * 用户角色：user/admin/ban

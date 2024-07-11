@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <groupId>com.jiang</groupId>
         <artifactId>duckoj-backend-microervice</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
+
+    <modelVersion>4.0.0</modelVersion>
     <groupId>com.jiang</groupId>
-    <artifactId>duckoj-backend-question-service</artifactId>
+    <artifactId>duckoj-backend-file-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>duckoj-backend-question-service</name>
-    <description>duckoj-backend-question-service</description>
+    <name>duckoj-backend-file-service</name>
+    <description>duckoj-backend-file-service</description>
     <properties>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -21,24 +22,19 @@
     </properties>
     <dependencies>
 
-        <!--        导入限流依赖：-->
+        <!--阿里云对象存储OSS-->
         <dependency>
-            <groupId>org.redisson</groupId>
-            <artifactId>redisson</artifactId>
-            <version>3.28.0</version>
+            <groupId>com.aliyun.oss</groupId>
+            <artifactId>aliyun-sdk-oss</artifactId>
+            <version>3.15.1</version>
         </dependency>
-<!--        mq序列化-->
+
         <dependency>
-            <groupId>com.fasterxml.jackson.dataformat</groupId>
-            <artifactId>jackson-dataformat-xml</artifactId>
-            <version>2.9.10</version>
+            <groupId>com.jiang</groupId>
+            <artifactId>duckoj-backend-service-client</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
         </dependency>
-        <!--AMQP依赖，包含RabbitMQ-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-amqp</artifactId>
-            <version>2.7.6</version>
-        </dependency>
+
         <dependency>
             <groupId>com.github.xiaoymin</groupId>
             <artifactId>knife4j-openapi2-spring-boot-starter</artifactId>
@@ -61,6 +57,7 @@
             <artifactId>duckoj-backend-service-client</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
+
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -113,8 +110,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>${spring-boot.version}</version>
                 <configuration>
-                    <mainClass>com.jiang.duckojbackendquestionservice.DuckojBackendQuestionServiceApplication
-                    </mainClass>
+                    <mainClass>com.jiang.duckojbackendfileservice.DuckojBackendFileServiceApplication</mainClass>
                     <skip>true</skip>
                 </configuration>
                 <executions>

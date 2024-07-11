@@ -43,7 +43,7 @@ public class JavaJudgeStrategy implements JudgeStrategy {
         JudgeInfo judgeInfoResponse = new JudgeInfo();
         judgeInfoResponse.setTime(runTime);
         judgeInfoResponse.setMemory(runMemory);
-
+        //默认是判题成功：
         JudgeInfoMessageEnum judgeInfoMessageEnum = JudgeInfoMessageEnum.ACCEPTED;
         if (judgeCaseInput.size() != outputList.size()) {
             //设置判题结果信息

@@ -42,7 +42,7 @@ public class QuestionInnerController implements QuestionOpenFeignClient {
 
     @Override
     @GetMapping("/question_submit/getById")
-    public QuestionSubmit getQuestionSubmitById(Long questionSubmitId) {
+    public QuestionSubmit getQuestionSubmitById(long questionSubmitId) {
         return questionSubmitService.getById(questionSubmitId);
     }
 

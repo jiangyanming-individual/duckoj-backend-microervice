@@ -1,7 +1,6 @@
 package com.jiang.duckojbackendjudgequestionservice.judge.impl;
 
 import cn.hutool.json.JSONUtil;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.jiang.duckojbackendcommon.common.ErrorCode;
 import com.jiang.duckojbackendcommon.exception.BusinessException;
 import com.jiang.duckojbackendjudgequestionservice.judge.JudgeService;
@@ -23,7 +22,6 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 
@@ -89,7 +87,6 @@ public class JudgeServiceImpl implements JudgeService {
                 .submitLanguage(submitLanguage)
                 .inputList(judgeCaseInput).build();
         ExecuteCodeResponse executeCodeResponse = codeSandBoxProxy.doExecute(executeCodeRequest);
-
         //(5) 判题机根据代码沙箱的输出进行判题
         JudgeContext judgeContext = new JudgeContext();
         judgeContext.setJudgeCaseList(judgeCaseList);
@@ -101,7 +98,7 @@ public class JudgeServiceImpl implements JudgeService {
         judgeContext.setJudgeInfo(executeCodeResponse.getJudgeInfo());
         judgeContext.setQuestionSubmit(questionSubmit);
         judgeContext.setQuestion(question);
-        //使用策略管理，进行判题操作：选择不同的判题策略
+        //选择不同的判题策略
         JudgeInfo judgeInfo = judgeManager.doJudge(judgeContext);
         //(6) 更新提交题目状态以及判题的状态
         questionSubmitUpdate = new QuestionSubmit();
@@ -113,22 +110,6 @@ public class JudgeServiceImpl implements JudgeService {
         update = questionOpenFeignClient.updateQuestionSubmitById(questionSubmitUpdate);
         if (!update) {
             throw new BusinessException(ErrorCode.OPERATION_ERROR, "更新题目提交状态失败");
-        }
-        //(7) 更新总的题目提交数：
-        QueryWrapper<QuestionSubmit> questionSubmitQueryWrapper = new QueryWrapper<>();
-        questionSubmitQueryWrapper.eq("questionId", questionId);
-        //统计总的提交数：
-        int submitNum = (int) questionOpenFeignClient.getQuestionSubmitList(questionSubmitQueryWrapper).stream().count();
-        List<QuestionSubmit> questionSubmitList = questionOpenFeignClient.getQuestionSubmitList(questionSubmitQueryWrapper).stream().collect(Collectors.toList());
-        //按照状态进行分组：
-        Map<Integer, List<QuestionSubmit>> submitQuestionMap = questionSubmitList.stream().collect(Collectors.groupingBy(QuestionSubmit::getSubmitState));
-        int acceptedNum = submitQuestionMap.get(QuestionSubmitStatusEnum.SUCCEED.getValue()).size();
-        //更新题目的状态：
-        question.setSubmitNum(submitNum + number);
-        question.setAcceptedNum(acceptedNum + number);
-        boolean b = questionOpenFeignClient.updateQuestionById(question);
-        if (!b) {
-            throw new BusinessException(ErrorCode.OPERATION_ERROR, "更新题目提交数失败");
         }
         //返回提交题目信息
         return questionOpenFeignClient.getQuestionSubmitById(questionSubmitId);

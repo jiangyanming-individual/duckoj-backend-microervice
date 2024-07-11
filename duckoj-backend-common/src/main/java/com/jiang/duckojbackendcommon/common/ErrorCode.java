@@ -13,7 +13,8 @@ public enum ErrorCode {
     FORBIDDEN_ERROR(40300, "禁止访问"),
     SYSTEM_ERROR(50000, "系统内部异常"),
     OPERATION_ERROR(50001, "操作失败"),
-    REQUEST_ERROR(50005,"请求失败");
+    REQUEST_ERROR(50005, "请求失败"),
+    NULL_ERROR(40500, "请求文件为空");
 
     /**
      * 状态码
